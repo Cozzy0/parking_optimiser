@@ -48,7 +48,7 @@ resultLabel = None
 
 ############### Optimisation functions ##################
 
-# Optimisation functions
+#Get Inputs of Fields
 def get_inputs():
     try:
         area_parking = float(areaParkingField.get())
@@ -61,9 +61,10 @@ def get_inputs():
         
         return area_parking, aisle_width, aisle_length, objective
     except ValueError as e:
-        errorLabel.configure(text=f"Invalid input: {e}")
+        errorLabel.configure(text=f"Invalid input: {e}") #Display error so user can debug
         return None
 
+# Objective selection
 def optimise_parking(area_parking, aisle_width, aisle_length, objective):
     if objective == "Increase Parking Spaces":
         return increase_parking_spaces(area_parking, aisle_width, aisle_length)
@@ -71,7 +72,8 @@ def optimise_parking(area_parking, aisle_width, aisle_length, objective):
         return improve_traffic_flow(area_parking, aisle_width, aisle_length)
     else:
         raise ValueError("Invalid optimization objective.")
-    
+
+#Algorithm 1
 def logistic_growth(x, L, k, x0):
     return (L*0.7) / (1 + np.exp(-k * (x - x0)))
 
@@ -93,6 +95,7 @@ def increase_parking_spaces(area_parking, aisle_width, aisle_length):
 
     return actual_spaces, parking_ratio
 
+#Algorithm 2
 def logistic_growth2(x, L, k, x0):
     return (L*0.7) / (1 + np.exp(-k * (x - x0)))
 
@@ -115,10 +118,11 @@ def improve_traffic_flow(area_parking, aisle_width, aisle_length):
     
     return actual_spaces, parking_ratio
 
+#Display result
 def show_result(result, ratio):
     global resultLabel
     if resultLabel:
-            resultLabel.destroy()
+            resultLabel.destroy() # Need to destroy label or text overlaps
     resultLabel = customtkinter.CTkLabel(app, text=f"Optimised result: At a Parking Ratio of {round(ratio, 2)}, {result} parking space(s) can efficiently fit\nThis result should only be used as assistance in assessing and restructuring parking areas.")
     resultLabel.grid(row=6, column=0, columnspan=4, padx=10, pady=10)
 
@@ -131,7 +135,7 @@ def on_optimise_button_click():
             show_result(result, ratio)
             errorLabel.configure(text="")  # Clear error message on successful optimization
         except ValueError as e:
-            errorLabel.configure(text=f"Error: {e}")
+            errorLabel.configure(text=f"Error: {e}") #Display error so user can debug
 
 # Optimise Button
 optimise_button = customtkinter.CTkButton(app, text="Optimise", command=on_optimise_button_click)
